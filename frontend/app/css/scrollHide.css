@@ -1,0 +1,8 @@
+/* .custom-pagination {
+  position: relative; 
+  margin-top: 20px; 
+} */
+.slick-prev::before,
+.slick-next::before {
+    display: none !important;
+}
