@@ -42,6 +42,10 @@ const Product = () => {
 
   const toggleForm = () => {
     setIsFormVisible(!isFormVisible);
+    // 👇 Gọi resetForm khi đóng form
+    if (isFormVisible) {
+      resetForm();
+    }
   };
 
   // Lấy danh sách sản phẩm khi component tải
@@ -225,7 +229,10 @@ const Product = () => {
         </div>
 
         <button
-          onClick={toggleForm}
+          onClick={() => {
+            resetForm(); // 👈 Reset form trước khi hiển thị
+            toggleForm();
+          }}
           className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
         >
           + Thêm sản phẩm
