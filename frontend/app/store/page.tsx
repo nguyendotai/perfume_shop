@@ -1,6 +1,8 @@
 "use client";
 import Categories from "../components/categories";
 import React from "react";
+import { GrLinkNext } from "react-icons/gr";
+import { GrLinkPrevious } from "react-icons/gr";
 import SideBar from "../components/sideBar";
 import RenderProduct from "../components/renderProduct";
 import { ISanPham } from "../components/constructorData";
@@ -140,7 +142,7 @@ export default function Products() {
                 disabled={currentPage === 1}
                 className="px-3 py-1 border rounded bg-white text-black hover:bg-gray-200 disabled:opacity-50"
               >
-                Trang trước
+                <GrLinkPrevious></GrLinkPrevious>
               </button>
 
               {Array.from(
@@ -175,7 +177,7 @@ export default function Products() {
                 }
                 className="px-3 py-1 border rounded bg-white text-black hover:bg-gray-200 disabled:opacity-50"
               >
-                Trang sau
+                <GrLinkNext></GrLinkNext>
               </button>
             </div>
           </div>
