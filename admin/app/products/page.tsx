@@ -127,7 +127,7 @@ const Product = () => {
 
     formData.append("createdAt", new Date().toISOString()); // Ngày tạo
     formData.append("updatedAt", new Date().toISOString()); // Ngày sửa
-    
+
     if (newProduct.hinh_anh) {
       formData.append("hinh_anh", newProduct.hinh_anh);
     }
@@ -206,14 +206,14 @@ const Product = () => {
   };
 
   return (
-    <div className="p-6 bg-gradient-to-b from-white to-gray-100 text-gray-900 min-h-screen space-y-6">
+    <div className="p-6 bg-gray-100 text-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Danh sách sản phẩm</h1>
         <div className="flex items-center gap-4">
-          <label className="text-sm text-gray-600">Sắp xếp theo:</label>
+          <label className="text-sm text-gray-500">Sắp xếp theo:</label>
           <select
-            className="bg-white text-gray-800 p-2 rounded-md border border-gray-300"
+            className="bg-white text-gray-900 p-2 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
           >
@@ -223,21 +223,23 @@ const Product = () => {
             <option value="priceDesc">Giá giảm dần</option>
           </select>
         </div>
-  
+
         <button
           onClick={toggleForm}
-          className="bg-blue-500 hover:bg-blue-400 text-white px-6 py-3 rounded-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
         >
           + Thêm sản phẩm
         </button>
       </div>
-  
+
       {/* Bảng sản phẩm */}
-      <div className="bg-white p-6 rounded-xl border border-gray-300 space-y-4">
-        <h3 className="text-lg font-semibold mb-4">Danh sách sản phẩm</h3>
+      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+        <h3 className="text-lg font-semibold mb-4 text-gray-900">
+          Danh sách sản phẩm
+        </h3>
         <div className="overflow-x-auto">
-          <table className="min-w-full text-sm text-left text-gray-800 border border-gray-300 bg-white rounded-lg overflow-hidden">
-            <thead className="text-gray-600 border-b border-gray-300 bg-gray-100">
+          <table className="min-w-full text-sm text-left text-gray-700 border border-gray-200 bg-white rounded-lg overflow-hidden shadow-sm">
+            <thead className="text-gray-500 bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="py-3 px-4 cursor-pointer">STT</th>
                 <th className="py-3 px-4 cursor-pointer">Tên sản phẩm</th>
@@ -256,44 +258,52 @@ const Product = () => {
               {products.map((product, index) => (
                 <tr
                   key={product.id}
-                  className="border-b border-gray-300 hover:bg-gray-100"
+                  className="border-b border-gray-200 hover:bg-gray-50"
                 >
                   <td className="py-3 px-4">{index + 1}</td>
-                  <td className="py-3 px-4">{product.ten_sp}</td>
-                  <td className="py-3 px-4">{product.mo_ta}</td>
+                  <td className="py-3 px-4 text-gray-900">{product.ten_sp}</td>
+                  <td className="py-3 px-4 text-gray-700">{product.mo_ta}</td>
                   <td className="py-3 px-4">
                     <img
                       src={`http://localhost:3000/uploads/products/${product.hinh_anh}`}
                       alt={`Sản phẩm ${product.id}`}
-                      className="w-12 h-12 object-cover rounded"
+                      className="w-12 h-12 object-cover rounded shadow-sm"
                     />
                   </td>
-                  <td className="py-3 px-4">{product.danh_muc?.ten_danh_muc}</td>
-                  <td className="py-3 px-4">{product.gia?.toLocaleString()}đ</td>
-                  <td className="py-3 px-4">
+                  <td className="py-3 px-4 text-gray-700">
+                    {product.danh_muc?.ten_danh_muc}
+                  </td>
+                  <td className="py-3 px-4 text-gray-900">
+                    {product.gia?.toLocaleString()}đ
+                  </td>
+
+                  <td className="py-3 px-4 text-gray-900">
                     {product.gia_km != null
                       ? product.gia_km.toLocaleString() + "đ"
                       : "—"}
                   </td>
-                  <td className="py-3 px-4">
+
+                  <td className="py-3 px-4 text-gray-700">
                     {product.createdAt
                       ? new Date(product.createdAt).toLocaleDateString()
                       : "—"}
                   </td>
-                  <td className="py-3 px-4">
+
+                  <td className="py-3 px-4 text-gray-700">
                     {product.updatedAt
                       ? new Date(product.updatedAt).toLocaleDateString()
                       : "—"}
                   </td>
-                  <td className="py-3 px-4 text-green-600">Hiển thị</td>
+
+                  <td className="py-3 px-4 text-green-500">Hiển thị</td>
                   <td className="py-3 px-4 space-x-2">
                     <button
-                      className="text-blue-600 hover:underline"
+                      className="text-blue-500 hover:underline"
                       onClick={() => {
                         setNewProduct((prevState) => ({
-                          ...prevState,
-                          ...product,
-                          hinh_anh: null,
+                          ...prevState, // Giữ nguyên các trường cũ
+                          ...product, // Cập nhật từ product
+                          hinh_anh: null, // Chỉ reset hinh_anh thành null
                         }));
                         setSelectedProduct(product);
                         setIsFormVisible(true);
@@ -301,8 +311,9 @@ const Product = () => {
                     >
                       Sửa
                     </button>
+
                     <button
-                      className="text-red-600 hover:underline"
+                      className="text-red-500 hover:underline"
                       onClick={() => handleDelete(product.id)}
                     >
                       Xóa
@@ -314,7 +325,7 @@ const Product = () => {
           </table>
         </div>
       </div>
-  
+
       {/* Form thêm sản phẩm */}
       <AnimatePresence>
         {isFormVisible && (
@@ -333,32 +344,178 @@ const Product = () => {
               transition={{ duration: 0.3 }}
               onClick={toggleForm}
             />
-  
+
             {/* Form thêm sản phẩm */}
             <motion.div
-              className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-xl z-10"
+              className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-xl z-10 border border-gray-200"
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <h3 className="text-2xl font-semibold mb-4">
+              <h3 className="text-2xl font-semibold mb-4 text-gray-900">
                 {selectedProduct ? "Chỉnh sửa sản phẩm" : "Thêm sản phẩm"}
               </h3>
-  
+
               <form onSubmit={handleSubmit}>
-                {/* ... giữ nguyên nội dung form nhưng đổi màu giống light mode như trên ... */}
-                {/* Ví dụ cho input: */}
-                <input
-                  type="text"
-                  id="ten_sp"
-                  name="ten_sp"
-                  value={newProduct.ten_sp}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900"
-                  required
-                />
-                {/* ...tương tự cho các input khác */}
+                <div className="mb-4">
+                  <label
+                    className="block text-sm text-gray-700"
+                    htmlFor="danh_muc_id"
+                  >
+                    Danh mục
+                  </label>
+                  <select
+                    id="danh_muc_id"
+                    name="danh_muc_id"
+                    value={newProduct.danh_muc_id}
+                    onChange={(e) =>
+                      setNewProduct((prev) => ({
+                        ...prev,
+                        danh_muc_id: Number(e.target.value),
+                      }))
+                    }
+                    className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    required
+                  >
+                    <option value={0} disabled hidden>
+                      -- Chọn danh mục --
+                    </option>
+                    {category.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.ten_danh_muc}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mb-4">
+                  <label
+                    className="block text-sm text-gray-700"
+                    htmlFor="ten_sp"
+                  >
+                    Tên sản phẩm
+                  </label>
+                  <input
+                    type="text"
+                    id="ten_sp"
+                    name="ten_sp"
+                    value={newProduct.ten_sp}
+                    onChange={handleChange}
+                    className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label
+                    className="block text-sm text-gray-700"
+                    htmlFor="mo_ta"
+                  >
+                    Mô tả sản phẩm
+                  </label>
+                  <textarea
+                    id="mo_ta"
+                    name="mo_ta"
+                    value={newProduct.mo_ta}
+                    onChange={handleChange}
+                    rows={4}
+                    className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="mb-4">
+                    <label
+                      className="block text-sm text-gray-700"
+                      htmlFor="gia"
+                    >
+                      Giá sản phẩm (VND)
+                    </label>
+                    <input
+                      type="number"
+                      id="gia"
+                      name="gia"
+                      value={newProduct.gia}
+                      onChange={handleChange}
+                      className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label
+                      className="block text-sm text-gray-700"
+                      htmlFor="gia_km"
+                    >
+                      Giá khuyến mãi (VND)
+                    </label>
+                    <input
+                      type="number"
+                      id="gia_km"
+                      name="gia_km"
+                      value={newProduct.gia_km}
+                      onChange={handleChange}
+                      className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-4 flex items-center">
+                  <input
+                    type="checkbox"
+                    id="an_hien"
+                    name="an_hien"
+                    checked={newProduct.an_hien === 1}
+                    onChange={(e) =>
+                      setNewProduct((prevState) => ({
+                        ...prevState,
+                        an_hien: e.target.checked ? 1 : 0, // 1 là hiển thị, 0 là ẩn
+                      }))
+                    }
+                    className="w-4 h-4 bg-white border border-gray-300 text-green-500 focus:ring-green-500 rounded"
+                  />
+                  <label
+                    htmlFor="an_hien"
+                    className="ml-2 text-sm text-gray-700"
+                  >
+                    Hiển thị sản phẩm
+                  </label>
+                </div>
+
+                <div className="mb-4">
+                  <label
+                    className="block text-sm text-gray-700"
+                    htmlFor="hinh_anh"
+                  >
+                    Hình ảnh sản phẩm
+                  </label>
+                  <input
+                    type="file"
+                    id="hinh_anh"
+                    name="hinh_anh"
+                    onChange={handleFileChange}
+                    className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    accept="image/*"
+                  />
+                </div>
+
+                <div className="flex gap-4">
+                  <button
+                    type="button"
+                    onClick={toggleForm}
+                    className="w-full py-3 bg-red-500 text-white rounded-md hover:bg-red-400 shadow-md"
+                  >
+                    Hủy bỏ
+                  </button>
+                  <button
+                    type="submit"
+                    className="w-full py-3 bg-green-500 text-white rounded-md hover:bg-green-400 shadow-md"
+                  >
+                    {selectedProduct ? "Cập nhật" : "Thêm sản phẩm"}
+                  </button>
+                </div>
               </form>
             </motion.div>
           </motion.div>
@@ -366,7 +523,6 @@ const Product = () => {
       </AnimatePresence>
     </div>
   );
-  
 };
 
 export default Product;
