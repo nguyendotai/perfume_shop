@@ -14,6 +14,16 @@ interface Product {
   updatedAt: string;
   an_hien: number;
   danh_muc?: Category;
+  brand?: string;
+  gender?: string;
+  nam_ra_mat?: number;
+  nong_do?: string;
+  phong_cach?: string;
+  huong_dau?: string;
+  huong_giua?: string;
+  huong_cuoi?: string;
+  dung_tich?: number;
+  hot?: number;
 }
 
 interface Category {
@@ -32,12 +42,21 @@ const Product = () => {
   const [newProduct, setNewProduct] = useState({
     ten_sp: "",
     mo_ta: "",
-    gia: 0,
-    gia_km: 0,
+    gia: undefined as number | undefined, // Thay 0 bằng undefined
+    gia_km: undefined as number | undefined, // Thay 0 bằng undefined
     hinh_anh: null as File | null,
     danh_muc_id: 0,
     an_hien: 1,
     nam_ra_mat: new Date().getFullYear(),
+    brand: "",
+    gender: "",
+    nong_do: "",
+    phong_cach: "",
+    huong_dau: "",
+    huong_giua: "",
+    huong_cuoi: "",
+    dung_tich: undefined as number | undefined, // Thay 0 bằng undefined
+    hot: undefined as number | undefined, // Thay 0 bằng undefined
   });
 
   const toggleForm = () => {
@@ -78,12 +97,29 @@ const Product = () => {
   }, []);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
+    let parsedValue: any = value;
+    if (
+      name === "gia" ||
+      name === "gia_km" ||
+      name === "dung_tich" ||
+      name === "nam_ra_mat" ||
+      name === "hot"
+    ) {
+      parsedValue = value === "" ? undefined : parseInt(value, 10) || undefined;
+    } else if (name === "danh_muc_id") {
+      parsedValue = parseInt(value, 10);
+    } else if (name === "an_hien") {
+      parsedValue = (e.target as HTMLInputElement).checked ? 1 : 0;
+    }
+  
     setNewProduct((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: parsedValue,
     }));
   };
 
@@ -101,12 +137,21 @@ const Product = () => {
     setNewProduct({
       ten_sp: "",
       mo_ta: "",
-      gia: 0,
-      gia_km: 0,
+      gia: undefined,
+      gia_km: undefined,
       hinh_anh: null,
       danh_muc_id: 0,
       an_hien: 1,
       nam_ra_mat: new Date().getFullYear(),
+      brand: "",
+      gender: "",
+      nong_do: "",
+      phong_cach: "",
+      huong_dau: "",
+      huong_giua: "",
+      huong_cuoi: "",
+      dung_tich: undefined,
+      hot: undefined,
     });
     setSelectedProduct(null);
   };
@@ -123,14 +168,22 @@ const Product = () => {
     const formData = new FormData();
     formData.append("ten_sp", newProduct.ten_sp);
     formData.append("mo_ta", newProduct.mo_ta);
-    formData.append("gia", newProduct.gia.toString());
-    formData.append("gia_km", newProduct.gia_km.toString());
+    formData.append("gia", newProduct.gia?.toString() || "");
+    formData.append("gia_km", newProduct.gia_km?.toString() || "");
     formData.append("danh_muc_id", newProduct.danh_muc_id.toString());
     formData.append("an_hien", newProduct.an_hien.toString());
-    formData.append("nam_ra_mat", newProduct.nam_ra_mat.toString());
-
-    formData.append("createdAt", new Date().toISOString()); // Ngày tạo
-    formData.append("updatedAt", new Date().toISOString()); // Ngày sửa
+    formData.append("nam_ra_mat", newProduct.nam_ra_mat?.toString() || "");
+    formData.append("brand", newProduct.brand || ""); // Thêm trường brand
+    formData.append("gender", newProduct.gender || ""); // Thêm trường gender
+    formData.append("nong_do", newProduct.nong_do || ""); // Thêm trường nong_do
+    formData.append("phong_cach", newProduct.phong_cach || ""); // Thêm trường phong_cach
+    formData.append("huong_dau", newProduct.huong_dau || ""); // Thêm trường huong_dau
+    formData.append("huong_giua", newProduct.huong_giua || ""); // Thêm trường huong_giua
+    formData.append("huong_cuoi", newProduct.huong_cuoi || ""); // Thêm trường huong_cuoi
+    formData.append("dung_tich", newProduct.dung_tich?.toString() || "");
+    formData.append("hot", newProduct.hot?.toString() || "");
+    formData.append("createdAt", new Date().toISOString());
+    formData.append("updatedAt", new Date().toISOString());
 
     if (newProduct.hinh_anh) {
       formData.append("hinh_anh", newProduct.hinh_anh);
@@ -354,7 +407,7 @@ const Product = () => {
 
             {/* Form thêm sản phẩm */}
             <motion.div
-              className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-xl z-10 border border-gray-200"
+              className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-2xl z-10 border border-gray-200 overflow-y-auto max-h-[90vh] "
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -364,7 +417,7 @@ const Product = () => {
                 {selectedProduct ? "Chỉnh sửa sản phẩm" : "Thêm sản phẩm"}
               </h3>
 
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="mb-4">
                   <label
                     className="block text-sm text-gray-700"
@@ -467,6 +520,183 @@ const Product = () => {
                       className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      className="block text-sm text-gray-700"
+                      htmlFor="brand"
+                    >
+                      Thương hiệu
+                    </label>
+                    <input
+                      type="text"
+                      id="brand"
+                      name="brand"
+                      value={newProduct.brand || ""}
+                      onChange={handleChange}
+                      className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      className="block text-sm text-gray-700"
+                      htmlFor="gender"
+                    >
+                      Giới tính
+                    </label>
+                    <select
+                      id="gender"
+                      name="gender"
+                      value={newProduct.gender || ""}
+                      onChange={handleChange}
+                      className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                      <option value="">-- Chọn giới tính --</option>
+                      <option value="Nam">Nam</option>
+                      <option value="Nữ">Nữ</option>
+                      <option value="Unisex">Unisex</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      className="block text-sm text-gray-700"
+                      htmlFor="nam_ra_mat"
+                    >
+                      Năm ra mắt
+                    </label>
+                    <input
+                      type="number"
+                      id="nam_ra_mat"
+                      name="nam_ra_mat"
+                      value={newProduct.nam_ra_mat || new Date().getFullYear()}
+                      onChange={handleChange}
+                      className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      className="block text-sm text-gray-700"
+                      htmlFor="nong_do"
+                    >
+                      Nồng độ
+                    </label>
+                    <input
+                      type="text"
+                      id="nong_do"
+                      name="nong_do"
+                      value={newProduct.nong_do || ""}
+                      onChange={handleChange}
+                      className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      className="block text-sm text-gray-700"
+                      htmlFor="phong_cach"
+                    >
+                      Phong cách
+                    </label>
+                    <input
+                      type="text"
+                      id="phong_cach"
+                      name="phong_cach"
+                      value={newProduct.phong_cach || ""}
+                      onChange={handleChange}
+                      className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      className="block text-sm text-gray-700"
+                      htmlFor="huong_dau"
+                    >
+                      Hương đầu
+                    </label>
+                    <input
+                      type="text"
+                      id="huong_dau"
+                      name="huong_dau"
+                      value={newProduct.huong_dau || ""}
+                      onChange={handleChange}
+                      className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      className="block text-sm text-gray-700"
+                      htmlFor="huong_giua"
+                    >
+                      Hương giữa
+                    </label>
+                    <input
+                      type="text"
+                      id="huong_giua"
+                      name="huong_giua"
+                      value={newProduct.huong_giua || ""}
+                      onChange={handleChange}
+                      className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      className="block text-sm text-gray-700"
+                      htmlFor="huong_cuoi"
+                    >
+                      Hương cuối
+                    </label>
+                    <input
+                      type="text"
+                      id="huong_cuoi"
+                      name="huong_cuoi"
+                      value={newProduct.huong_cuoi || ""}
+                      onChange={handleChange}
+                      className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    className="block text-sm text-gray-700"
+                    htmlFor="dung_tich"
+                  >
+                    Dung tích (ml)
+                  </label>
+                  <input
+                    type="number"
+                    id="dung_tich"
+                    name="dung_tich"
+                    value={newProduct.dung_tich || 0}
+                    onChange={handleChange}
+                    className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm text-gray-700" htmlFor="hot">
+                    Sản phẩm nổi bật
+                  </label>
+                  <select
+                    id="hot"
+                    name="hot"
+                    value={newProduct.hot || 0}
+                    onChange={handleChange}
+                    className="w-full p-2 rounded-lg bg-white border border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  >
+                    <option value={0}>Không</option>
+                    <option value={1}>Có</option>
+                  </select>
                 </div>
 
                 <div className="mb-4 flex items-center">

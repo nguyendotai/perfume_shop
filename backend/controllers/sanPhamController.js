@@ -31,33 +31,60 @@ const sanPhamController = {
 
     createSanPham: async (req, res) => {
         try {
-            const { ten_sp, mo_ta, gia, gia_km, danh_muc_id, an_hien, nam_ra_mat } = req.body;
+            const {
+                ten_sp,
+                mo_ta,
+                gia,
+                gia_km,
+                danh_muc_id,
+                brand,
+                gender,
+                nam_ra_mat,
+                nong_do,
+                phong_cach,
+                huong_dau,
+                huong_giua,
+                huong_cuoi,
+                dung_tich,
+                hot,
+                an_hien
+            } = req.body;
             const hinh_anh = req.file ? req.file.filename : null;
-
+    
             if (!ten_sp || !gia || !danh_muc_id) {
-                return res.status(400).json({ error: "Thiếu thông tin bắt buộc" });
+                return res.status(400).json({ error: "Thiếu thông tin bắt buộc (ten_sp, gia, danh_muc_id)" });
             }
-
+    
             const newSP = await SanPham.create({
                 ten_sp,
                 mo_ta,
                 gia,
                 gia_km,
                 danh_muc_id,
-                an_hien: an_hien ?? 1,
+                brand,
+                gender,
                 nam_ra_mat: nam_ra_mat ?? new Date().getFullYear(),
-                hinh_anh
+                nong_do,
+                phong_cach,
+                huong_dau,
+                huong_giua,
+                huong_cuoi,
+                hinh_anh,
+                dung_tich,
+                hot: hot ?? 0,
+                an_hien: an_hien ?? 1
             });
-
+    
             const { updatedAt, ...productWithoutUpdatedAt } = newSP.toJSON();
-
-            res.json({ message: "Thêm sản phẩm thành công", product: productWithoutUpdatedAt });
-
+    
+            res.status(201).json({ message: "Thêm sản phẩm thành công", product: productWithoutUpdatedAt });
+    
         } catch (error) {
             console.error("Lỗi khi thêm sản phẩm:", error);
             res.status(500).json({ error: "Lỗi khi thêm sản phẩm", details: error.message });
         }
     },
+    
 
     updateSanPham: async (req, res) => {
         try {
